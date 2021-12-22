@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="Keywords" content="关键字">
+    <meta name="Description" content="描述">
+    <title></title>
+    <style></style>
+</head>
+<body>
+
+
+    <script>
+        let accoutArr=[
+            {
+                account:"11",
+                passwords:11,
+                money:100
+            },
+            {
+                account:"22",
+                passwords:22,
+                money:200
+            },
+            {
+                account:"33",
+                passwords:33,
+                money:300
+            }
+        ]
+
+
+        let login=0;//默认登录的人是11
+
+        //登录
+        checkLogin()
+        function checkLogin() {
+            outer:
+                for(let i=0;i<3;i++){//有三次输入账号和密码的机会
+                    let loginInput=prompt("输入账号");
+                    let passInput=parseInt(prompt("输入密码"));
+                    for(let j=0;j<accoutArr.length;j++){//循环用户的数组，看是否和输入的用户密码匹配
+                        if(accoutArr[j].account === loginInput && accoutArr[j].passwords===passInput){
+                            login=j;
+
+                            //进入主界面
+                            mainDisplay();
+
+                            break outer;
+                        }
+                    }
+
+                }
+        }
+
+
+
+        //主界面
+        function mainDisplay() {
+            let chooseInput=prompt("请输入操作 1.存款 2.转账 3.取款 4. 查询余额")
+
+            if(chooseInput == 1){
+                //存款
+                saveMoney();
+            }else if(chooseInput == 2){
+                //转账
+                transfer();
+            }else if(chooseInput == 3){
+                //取款
+                pickMoney();
+            }else if(chooseInput == 4){
+                //查询余额
+                checkMoney();
+            }
+
+        }
+
+        //存款
+        function saveMoney() {
+            let moneyInput=parseInt(prompt("请输入存款金额"));
+            //money[login]=money[login]+moneyInput;  可以简写为
+
+            accoutArr[login].money += moneyInput;
+            alert("当前账户余额：" + accoutArr[login].money );
+            let _return = prompt("是否返回主界面? 1.是 2.否")
+            if( _return ){
+                mainDisplay()
+            }
+        }
+
+        //转账
+        function transfer() {
+            let transferAcc=prompt("请输入转账账号");
+            let transferMoney=parseInt(prompt("请输入转账金额"));
+
+            //判断转账金额是否超支
+            if(transferMoney>accoutArr[login].money){
+                alert("转账超支，请重新输入");
+                transfer()
+            }else{//金额足够
+                //循环账号数组判断转账的账号是否存在，不能自己给自己转
+                for(let i=0;i<accoutArr.length;i++){
+                    if(transferAcc == accoutArr[i].account && transferAcc != accoutArr[login].account){//有用户
+                        accoutArr[i].money += transferMoney;
+                        accoutArr[login].money -= transferMoney;
+                        alert("转账成功,当前账户余额" + accoutArr[login].money );
+                        break;
+                    }else if( transferAcc == accoutArr[login].account ){//自己给自己转
+                        alert("不能自己给自己转账");
+                        break;
+                    }else if(i == accoutArr.length-1){
+                        alert("账号不存在，请重新输入");
+                        transfer();
+                    }
+                }
+            }
+            let _return = prompt("是否返回主界面? 1.是 2.否")
+            if( _return ){
+                mainDisplay()
+            }
+        }
+        
+        
+        //取款
+        function pickMoney() {
+            let amount = Number( prompt("请输入您想要取款的金额") );
+            if(amount > accoutArr[login].money){
+                prompt("您的余额不足，请重新输入您想要的金额");
+                pickMoney();
+            }else {
+                accoutArr[login].money -= amount;
+                alert("取款成功，您剩余金额为 " + accoutArr[login].money);
+            }
+            let _return = prompt("是否返回主界面? 1.是 2.否")
+            if( _return ){
+                mainDisplay()
+            }
+        }
+        
+        //查询余额
+        function checkMoney() {
+            alert("您当前的余额是" + accoutArr[login].money);
+            let _return = prompt("是否返回主界面? 1.是 2.否")
+            if( _return ){
+                mainDisplay()
+            }
+        }
+
+    </script>
+</body>
+</html>
